@@ -21,7 +21,7 @@ st.header(':red[Netflix South African Recomender] :film_projector:')
 #Import file and convert embedding to array
 @st.cache_data
 def load_data():
-    df_embed=pd.read_csv('C:/Users/Gill/Documents/AI/Project/Netflix/netflixRsaEmbeddings.csv',delimiter=',')
+    df_embed=pd.read_csv('netflixRsaEmbeddings.csv',delimiter=',')
     df_embed['embedding']=df_embed['embedding'].apply(eval).apply(np.array) #converts embedding to numpy array
     return df_embed
 
