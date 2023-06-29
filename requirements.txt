@@ -1,1 +1,5 @@
-netflixRecommend.py
+streamlit
+openai
+os
+pandas
+numpy
