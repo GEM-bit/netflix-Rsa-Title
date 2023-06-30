@@ -23,7 +23,13 @@ st.header(':red[Netflix South African Recomender] :film_projector:')
 def load_data():
     
     file_url = 'https://drive.google.com/uc?id=1rU1iKFZVfQ4GLbgc7Dozs8N4Tw7YTkU4'
-    df_embed = pd.read_csv(file_url,delimiter=',')
+
+    try:
+        df_embed = pd.read_csv(file_url,delimiter=',')
+        print("CSV file read successfully.")
+    except Exception as e:
+        print("An error occurred while reading the CSV file:", str(e)) 
+
     #df_embed=pd.read_csv('netflixRsaEmbeddings.csv',delimiter=',')
     df_embed['embedding']=df_embed['embedding'].apply(eval).apply(np.array) #converts embedding to numpy array
     return df_embed
