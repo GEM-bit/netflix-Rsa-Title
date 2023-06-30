@@ -2,5 +2,4 @@ streamlit
 openai
 pandas
 numpy
-distances_from_embeddings
-indices_of_nearest_neighbors_from_distances
+openai.embeddings_utils
