@@ -19,7 +19,7 @@ st.set_page_config(
 st.header(':red[Netflix South African Recomender] :film_projector:')
 
 #Import file and convert embedding to array
-@st.cache_data
+@st.cache_data(persist=True)
 def load_data():
     
     file_url = 'https://drive.google.com/uc?id=1rU1iKFZVfQ4GLbgc7Dozs8N4Tw7YTkU4'
