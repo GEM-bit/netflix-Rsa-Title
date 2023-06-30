@@ -1,5 +1,5 @@
+pip>=22.0.3
 streamlit
 openai
 pandas
 numpy
-openai.embeddings_utils
