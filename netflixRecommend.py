@@ -22,10 +22,11 @@ st.header(':red[Netflix South African Recomender] :film_projector:')
 @st.cache_data(persist=True)
 def load_data():
     
-    #file_url = 'https://drive.google.com/uc?id=1rU1iKFZVfQ4GLbgc7Dozs8N4Tw7YTkU4'
+    file_url = 'https://drive.google.com/uc?id=1rU1iKFZVfQ4GLbgc7Dozs8N4Tw7YTkU4&export=download'
 
     try:
-        df_embed = pd.read_csv('netflixrsaembeddings.csv',delimiter=',')
+        #df_embed = pd.read_csv('netflixrsaembeddings.csv',delimiter=',')
+        df_embed = pd.read_csv(file_url)
         print("CSV file read successfully.")
     except Exception as e:
         print("An error occurred while reading the CSV file:", str(e)) 
