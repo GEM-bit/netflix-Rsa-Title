@@ -22,11 +22,19 @@ st.header(':red[Netflix South African Recomender] :film_projector:')
 @st.cache_data(persist=True)
 def load_data():
     
-    file_url = 'https://drive.google.com/uc?id=1rU1iKFZVfQ4GLbgc7Dozs8N4Tw7YTkU4&export=download'
+    #file_url = 'https://drive.google.com/uc?id=1rU1iKFZVfQ4GLbgc7Dozs8N4Tw7YTkU4&export=download'
 
     try:
-        #df_embed = pd.read_csv('netflixrsaembeddings.csv',delimiter=',')
-        df_embed = pd.read_csv(file_url)
+        df_embed1 = pd.read_csv('netflixrsaembeddings.csv',delimiter=',')
+        df_embed2 = pd.read_csv('output1.csv',delimiter=',')
+        #df_embed3 = pd.read_csv('output3.csv',delimiter=',')
+        #df_embed4 = pd.read_csv('output4.csv',delimiter=',')
+        #df_embed5 = pd.read_csv('output5.csv',delimiter=',')
+
+        #df_embed = pd.concat([df_embed1, df_embed2,df_embed3,df_embed4,df_embed5], ignore_index=True)
+        df_embed = pd.concat([df_embed1, df_embed2], ignore_index=True)
+
+        #df_embed = pd.read_csv(file_url)
         print("CSV file read successfully.")
     except Exception as e:
         print("An error occurred while reading the CSV file:", str(e)) 
