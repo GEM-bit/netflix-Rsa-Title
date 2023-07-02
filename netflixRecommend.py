@@ -49,7 +49,9 @@ def get_recomdendation_from_title(df_embeddings, title, k):
     #if title not in list(df_embeddings['title']):
         return False
             
-    movie_embedding = df_embeddings[df_embeddings['title'] == title]['embedding']
+    movie_embedding = df_embeddings[df_embeddings['title'].str.lower().str.strip() == title.lower().rstrip()]['embedding']
+        
+    #movie_embedding = df_embeddings[df_embeddings['title'] == title]['embedding']
     movie_embedding = movie_embedding.squeeze()    #Converts into a Python list  -  embeddings for selected title
     
     embeddings = list(df_embeddings['embedding'])    #List of all embeddings
