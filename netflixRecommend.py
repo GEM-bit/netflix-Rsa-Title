@@ -22,8 +22,6 @@ st.header(':red[Netflix South African Recomender] :film_projector:')
 @st.cache_data(persist=True)
 def load_data():
     
-    #file_url = 'https://drive.google.com/uc?id=1rU1iKFZVfQ4GLbgc7Dozs8N4Tw7YTkU4&export=download'
-
     try:
         df_embed1 = pd.read_csv('netflixrsaembeddings.csv',delimiter=',')
         df_embed2 = pd.read_csv('output1.csv',delimiter=',')
@@ -39,7 +37,6 @@ def load_data():
     except Exception as e:
         print("An error occurred while reading the CSV file:", str(e)) 
 
-    #df_embed=pd.read_csv('netflixRsaEmbeddings.csv',delimiter=',')
     df_embed['embedding']=df_embed['embedding'].apply(eval).apply(np.array) #converts embedding to numpy array
     return df_embed
 
@@ -47,7 +44,9 @@ def load_data():
 def get_recomdendation_from_title(df_embeddings, title, k):
     from openai.embeddings_utils import distances_from_embeddings, indices_of_nearest_neighbors_from_distances
     index = 0
-    if title not in list(df_embeddings['title']):
+    
+    if title.lower().rstrip() not in map(str.strip, df_embeddings['title'].str.lower()):
+    #if title not in list(df_embeddings['title']):
         return False
             
     movie_embedding = df_embeddings[df_embeddings['title'] == title]['embedding']
