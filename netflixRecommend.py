@@ -2,6 +2,11 @@
 #a similar synopsis and are available in Netflix South Arica
 #Gillian Metcalf 29/06/2023
 
+#Changes
+#Store vectors in ChromaDB instead of Pinecone
+#Add link to Rotten Tomatoes for each recomendation
+#Put suggestions in st.text_area
+
 import streamlit as st 
 import openai
 import pandas as pd
@@ -10,13 +15,14 @@ import numpy as np
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 st.set_page_config(
-    page_title='Netflix South African Recomender', 
+    page_title='​Personalized NetflixSA', 
     page_icon=":film_projector:", 
     layout="centered", 
     initial_sidebar_state="auto", 
     menu_items=None)
 
-st.header(':red[Netflix South African Recomender] :film_projector:')
+st.header(':red[​Personalized NetflixSA:]:film_projector:')
+st.subheader(':red[Uncover Content Just for You] ')
 
 #Import file and convert embedding to array
 @st.cache_data(persist=True)
@@ -46,12 +52,10 @@ def get_recomdendation_from_title(df_embeddings, title, k):
     index = 0
     
     if title.lower().rstrip() not in map(str.strip, df_embeddings['title'].str.lower()):
-    #if title not in list(df_embeddings['title']):
         return False
             
     movie_embedding = df_embeddings[df_embeddings['title'].str.lower().str.strip() == title.lower().rstrip()]['embedding']
         
-    #movie_embedding = df_embeddings[df_embeddings['title'] == title]['embedding']
     movie_embedding = movie_embedding.squeeze()    #Converts into a Python list  -  embeddings for selected title
     
     embeddings = list(df_embeddings['embedding'])    #List of all embeddings
@@ -62,12 +66,11 @@ def get_recomdendation_from_title(df_embeddings, title, k):
     recomendations = list()
 
     indices = indices_of_nearest_neighbors[0:300]
-    st.write(df_embeddings.iloc[indices[0]]['synopsis'] )      #description of entered movie
+    st.text_area(label='Synopsis',value=df_embeddings.iloc[indices[0]]['synopsis'],height=100 )      #description of entered movie
     st.divider()
            
     count = 1
 
-    #while index < len(indices):
     while ((index < k) and (count < len(indices))):
         current_index = indices[count]
         if ((cb_movies and df_embeddings.iloc[current_index]['title_type'] == 'movie' ) or (cb_series and df_embeddings.iloc[current_index]['title_type'] == 'series' )): 
@@ -75,32 +78,47 @@ def get_recomdendation_from_title(df_embeddings, title, k):
             movie['Title'] = df_embeddings.iloc[current_index]['title']      #title
             movie['Description'] = df_embeddings.iloc[current_index]['synopsis']      #description
             movie['Type'] = df_embeddings.iloc[current_index]['title_type']      #Movie / Series
+            movie['Year'] = df_embeddings.iloc[current_index]['year']      #Movie / Series
             movie['Distance'] = distances[current_index]
             recomendations.append(movie)
             index += 1
         count += 1
     return recomendations     
-    
-st.text_input("Enter the movie/series title: ",key="title")
+
+# ########################################################## Main Code ###############################################################    
+enteredTitle = st.text_input("Enter the movie/series title: ",key="title")
 
 cb_movies = st.checkbox('Movies',value=True)
 cb_series = st.checkbox('Series',value=True)
 
-if st.button(':mag:'):
+if enteredTitle != '':               #Title and enter button clicked
+    if st.session_state.get('last_text') != enteredTitle:    
+        df_embed = load_data()
 
-    df_embed = load_data()
+        #Run recomendation function
+        movie_recomendations= get_recomdendation_from_title(df_embed, st.session_state.title, 11)
 
-    #Run recomendation function
-    movie_recomendations= get_recomdendation_from_title(df_embed, st.session_state.title, 10)
+        if movie_recomendations:
 
-    if movie_recomendations:
-        
-        for i, item in enumerate(movie_recomendations):
-                        
-            st.write(f'Title: {item["Title"]}')
-            st.write(f'Description: {item["Description"]}') 
-            st.write(f'Type: {item["Type"]}')             
-            st.divider()
+            for i, item in enumerate(movie_recomendations):
+
+                searchString = f'{item["Title"]}%20{item["Year"]}%20{item["Type"]}'
+                searchString=searchString.replace(" ", "%20")
+                link=f'https://www.rottentomatoes.com/search?search={searchString}'
+
+                text1=f'## Title: {item["Title"]}'
+                text2=f'''Description: {item["Description"]}'''
+                text3=f'Year: {item["Year"]}'
+                text4=f'Type: {item["Type"]}'
+                text5=f'[Review Link]({link})'
+                            
+                st.markdown(text1)
+                st.markdown(text2)
+                st.markdown(text3)
+                st.markdown(text4)
+                st.markdown(text5)
+            st.session_state['last_text'] = enteredTitle
     else:
-     st.write(f'{st.session_state.title} not in dataset')       
+        st.write(f'{st.session_state.title} not in dataset')      
 
+# run the app: streamlit run ./netflixRecommend.py
