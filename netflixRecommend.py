@@ -49,8 +49,7 @@ def load_data():
 
 #Get recomendation from title
 def get_recomdendation_from_title(df_embeddings, title, k):
-    from langchain.embeddings import OpenAIEmbeddings
-    from OpenAIEmbeddings import distances_from_embeddings, indices_of_nearest_neighbors_from_distances
+    from openaiembeddings import distances_from_embeddings, indices_of_nearest_neighbors_from_distances
     index = 0
     
     if title.lower().rstrip() not in map(str.strip, df_embeddings['title'].str.lower()):
@@ -124,4 +123,5 @@ if enteredTitle != '':               #Title and enter button clicked
         st.write(f'{st.session_state.title} not in dataset')      
 
 # run the app: streamlit run ./netflixRecommend.py
+
 
