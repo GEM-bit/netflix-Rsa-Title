@@ -48,62 +48,62 @@ def load_data():
     return df_embed
 
 #Get recomendation from title
-def get_recomdendation_from_title(df_embeddings, title, k):
+def get_recommendation_from_title(df_embeddings, title, k, cb_movies=True, cb_series=True):
     import streamlit as st
     from scipy.spatial.distance import cosine
     import numpy as np
-    
+
     def distances_from_embeddings(query_embedding, embedding_list):
         return [cosine(query_embedding, emb) for emb in embedding_list]
-    
+
     def indices_of_nearest_neighbors_from_distances(distances):
         return np.argsort(distances)
-    
-    def get_recommendation_from_title(df_embeddings, title, k, cb_movies=True, cb_series=True):
-        # Normalize title input
-        title_clean = title.lower().strip()
-    
-        # Check if title exists
-        titles_clean = df_embeddings['title'].str.lower().str.strip()
-        if title_clean not in titles_clean.values:
-            return False
-    
-        # Get embedding for the selected title
-        movie_embedding = df_embeddings.loc[titles_clean == title_clean, 'embedding'].squeeze()
-    
-        # Get all embeddings
-        embeddings = df_embeddings['embedding'].tolist()
-    
-        # Compute distances and nearest neighbors
-        distances = distances_from_embeddings(movie_embedding, embeddings)
-        indices_of_nearest_neighbors = indices_of_nearest_neighbors_from_distances(distances)
-    
-        # Display synopsis of selected title
-        st.text_area(label='Synopsis', value=df_embeddings.iloc[indices_of_nearest_neighbors[0]]['synopsis'], height=100)
-        st.divider()
-    
-        # Collect recommendations
-        recommendations = []
-        count = 1
-        index = 0
-    
-        while index < k and count < len(indices_of_nearest_neighbors):
-            current_index = indices_of_nearest_neighbors[count]
-            title_type = df_embeddings.iloc[current_index]['title_type']
-    
-            if (cb_movies and title_type == 'movie') or (cb_series and title_type == 'series'):
-                movie = {
-                    'Title': df_embeddings.iloc[current_index]['title'],
-                    'Description': df_embeddings.iloc[current_index]['synopsis'],
-                    'Type': title_type,
-                    'Year': df_embeddings.iloc[current_index]['year'],
-                    'Distance': distances[current_index]
-                }
-                recommendations.append(movie)
-                index += 1
-            count += 1
-            
+
+    # Normalize title input
+    title_clean = title.lower().strip()
+
+    # Check if title exists
+    titles_clean = df_embeddings['title'].str.lower().str.strip()
+    if title_clean not in titles_clean.values:
+        return False
+
+    # Get embedding for the selected title
+    movie_embedding = df_embeddings.loc[titles_clean == title_clean, 'embedding'].squeeze()
+
+    # Get all embeddings
+    embeddings = df_embeddings['embedding'].tolist()
+
+    # Compute distances and nearest neighbors
+    distances = distances_from_embeddings(movie_embedding, embeddings)
+    indices_of_nearest_neighbors = indices_of_nearest_neighbors_from_distances(distances)
+
+    # Display synopsis of selected title
+    st.text_area(label='Synopsis', value=df_embeddings.iloc[indices_of_nearest_neighbors[0]]['synopsis'], height=100)
+    st.divider()
+
+    # Collect recommendations
+    recommendations = []
+    count = 1
+    index = 0
+
+    while index < k and count < len(indices_of_nearest_neighbors):
+        current_index = indices_of_nearest_neighbors[count]
+        title_type = df_embeddings.iloc[current_index]['title_type']
+
+        if (cb_movies and title_type == 'movie') or (cb_series and title_type == 'series'):
+            movie = {
+                'Title': df_embeddings.iloc[current_index]['title'],
+                'Description': df_embeddings.iloc[current_index]['synopsis'],
+                'Type': title_type,
+                'Year': df_embeddings.iloc[current_index]['year'],
+                'Distance': distances[current_index]
+            }
+            recommendations.append(movie)
+            index += 1
+        count += 1
+
     return recommendations
+    
 # ########################################################## Main Code ###############################################################    
 enteredTitle = st.text_input("Enter the movie/series title: ",key="title")
 
@@ -141,6 +141,7 @@ if enteredTitle != '':               #Title and enter button clicked
         st.write(f'{st.session_state.title} not in dataset')      
 
 # run the app: streamlit run ./netflixRecommend.py
+
 
 
 
