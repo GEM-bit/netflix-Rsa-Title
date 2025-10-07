@@ -9,6 +9,7 @@
 
 import streamlit as st 
 import openai
+
 import pandas as pd
 import numpy as np
 
@@ -48,7 +49,7 @@ def load_data():
 
 #Get recomendation from title
 def get_recomdendation_from_title(df_embeddings, title, k):
-    from openai.embeddings_utils import distances_from_embeddings, indices_of_nearest_neighbors_from_distances
+    from openaiembeddings import distances_from_embeddings, indices_of_nearest_neighbors_from_distances
     index = 0
     
     if title.lower().rstrip() not in map(str.strip, df_embeddings['title'].str.lower()):
