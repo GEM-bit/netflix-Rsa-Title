@@ -48,7 +48,7 @@ def load_data():
     return df_embed
 
 #Get recomendation from title
-def get_recomendation_from_title(df_embeddings, title, k, cb_movies=True, cb_series=True):
+def get_recomdendation_from_title(df_embeddings, title, k, cb_movies=True, cb_series=True):
     import streamlit as st
     from scipy.spatial.distance import cosine
     import numpy as np
@@ -141,6 +141,7 @@ if enteredTitle != '':               #Title and enter button clicked
         st.write(f'{st.session_state.title} not in dataset')      
 
 # run the app: streamlit run ./netflixRecommend.py
+
 
 
 
