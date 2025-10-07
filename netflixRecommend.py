@@ -103,8 +103,7 @@ def get_recomdendation_from_title(df_embeddings, title, k):
                 index += 1
             count += 1
             
-    return recomendations     
-
+    return recommendations
 # ########################################################## Main Code ###############################################################    
 enteredTitle = st.text_input("Enter the movie/series title: ",key="title")
 
@@ -142,6 +141,7 @@ if enteredTitle != '':               #Title and enter button clicked
         st.write(f'{st.session_state.title} not in dataset')      
 
 # run the app: streamlit run ./netflixRecommend.py
+
 
 
 
